@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estado de Cuenta - Mercedes-Benz Mobility</title>
+    <title>Confirmación de Lectura - Mercedes-Benz Mobility</title>
     <style>
         * {
             margin: 0;
@@ -32,52 +32,26 @@
             color: white;
             padding: 30px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            animation: pulse 3s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
         }
         
         .header h1 {
             font-size: 28px;
             margin-bottom: 10px;
-            position: relative;
-        }
-        
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-            position: relative;
         }
         
         .content {
             padding: 40px;
         }
         
-        .success-badge {
+        .confirmation-badge {
             background: #d4edda;
             color: #155724;
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
             text-align: center;
             margin-bottom: 30px;
             font-weight: bold;
-            border-left: 5px solid #28a745;
+            border: 2px solid #28a745;
         }
         
         .info-card {
@@ -86,23 +60,6 @@
             border-radius: 12px;
             margin-bottom: 25px;
             border: 1px solid #dee2e6;
-        }
-        
-        .info-card h3 {
-            color: #003366;
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
-        
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .info-row:last-child {
-            border-bottom: none;
         }
         
         .amount-highlight {
@@ -114,21 +71,10 @@
             border: 2px solid #ffc107;
         }
         
-        .amount-highlight h3 {
-            color: #856404;
-            margin-bottom: 10px;
-        }
-        
         .amount {
             font-size: 36px;
             font-weight: bold;
             color: #dc3545;
-            animation: fadeIn 1s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .bank-info {
@@ -137,21 +83,6 @@
             border-radius: 12px;
             margin: 25px 0;
             border-left: 5px solid #003366;
-        }
-        
-        .bank-info h3 {
-            color: #003366;
-            margin-bottom: 15px;
-        }
-        
-        .warning-box {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-weight: bold;
-            text-align: center;
         }
         
         .footer {
@@ -168,22 +99,6 @@
             padding: 50px;
             color: #666;
         }
-        
-        .loading::after {
-            content: '...';
-            animation: dots 1.5s infinite;
-        }
-        
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
-        }
-        
-        @media (max-width: 600px) {
-            .content { padding: 20px; }
-            .amount { font-size: 28px; }
-        }
     </style>
 </head>
 <body>
@@ -194,20 +109,14 @@
         </div>
         
         <div class="content" id="main-content">
-            <div class="loading">Cargando información de su cuenta</div>
+            <div class="loading">Cargando información...</div>
         </div>
         
         <div class="footer">
             <p>© 2024 Mercedes-Benz Mobility México, S. de R.L. de C.V.</p>
-            <p>Avenida Santa Fe No. 428, Torre III, Piso 3, Colonia Santa Fe</p>
-            <p>Alcaldía Cuajimalpa de Morelos, C.P. 05348, Ciudad de México</p>
-            <p style="margin-top: 10px; color: #999;">Este documento es confidencial</p>
+            <p>Este documento es confidencial y contiene información privilegiada</p>
         </div>
     </div>
-    
-    <!-- Imagen de tracking (Píxel invisible) -->
-    <img src="https://www.google-analytics.com/collect?v=1&t=event&ec=email&ea=open&el=detalle_adeudo&tid=UA-TU-ID-DE-SEGUIMIENTO&cid=CLIENTE-ID" 
-         width="1" height="1" style="display:none;" alt="" />
     
     <script>
         // Obtener parámetros de la URL
@@ -221,7 +130,6 @@
             return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
         
-        // Obtener datos del cliente
         const cuenta = getParameterByName('cuenta') || 'No especificado';
         const nombre = getParameterByName('nombre') || 'Cliente';
         const monto = getParameterByName('monto') || '0';
@@ -233,105 +141,53 @@
             minute: '2-digit'
         });
         
-        // Formatear monto
         const montoFormateado = new Intl.NumberFormat('es-MX', {
             style: 'currency',
             currency: 'MXN'
         }).format(parseFloat(monto));
         
-        // Construir contenido dinámico
         const contenidoHTML = `
-            <div class="success-badge">
-                ✅ <strong>Confirmación de lectura registrada</strong><br>
-                <small>${fecha}</small>
+            <div class="confirmation-badge">
+                ✅ <strong>CONFIRMACIÓN DE LECTURA REGISTRADA</strong><br>
+                <small>${fecha} | Contrato: ${cuenta}</small>
             </div>
             
             <div class="info-card">
                 <h3>📋 Información del Cliente</h3>
-                <div class="info-row">
-                    <span><strong>👤 Cliente:</strong></span>
-                    <span>${nombre}</span>
-                </div>
-                <div class="info-row">
-                    <span><strong>🏢 Contrato:</strong></span>
-                    <span style="font-weight: bold; color: #003366;">${cuenta}</span>
-                </div>
-                <div class="info-row">
-                    <span><strong>📅 Fecha de consulta:</strong></span>
-                    <span>${fecha}</span>
-                </div>
+                <p><strong>👤 Cliente:</strong> ${nombre}</p>
+                <p><strong>🏢 Contrato:</strong> ${cuenta}</p>
+                <p><strong>📅 Fecha de consulta:</strong> ${fecha}</p>
             </div>
             
             <div class="amount-highlight">
                 <h3>⚠️ SALDO VENCIDO</h3>
                 <div class="amount">${montoFormateado}</div>
-                <p style="color: #856404; margin-top: 10px;">Pago requerido a la brevedad para evitar acciones legales</p>
+                <p style="color: #856404; margin-top: 10px;">Pago requerido a la brevedad</p>
             </div>
             
             <div class="bank-info">
                 <h3>🏦 Datos Bancarios para Pago</h3>
-                <div class="info-row">
-                    <span><strong>Banco:</strong></span>
-                    <span>BBVA</span>
-                </div>
-                <div class="info-row">
-                    <span><strong>Beneficiario:</strong></span>
-                    <span>Mercedes-Benz Mobility México</span>
-                </div>
-                <div class="info-row">
-                    <span><strong>RFC:</strong></span>
-                    <span>MBF211124768</span>
-                </div>
-                <div class="info-row">
-                    <span><strong>Convenio CIE:</strong></span>
-                    <span>002052881</span>
-                </div>
-                <div class="info-row">
-                    <span><strong>CLABE:</strong></span>
-                    <span style="font-weight: bold;">0129 1400 2020 528819</span>
-                </div>
-                <div class="info-row">
-                    <span><strong>Referencia:</strong></span>
-                    <span style="color: #dc3545; font-weight: bold;">${cuenta}</span>
-                </div>
+                <p><strong>Banco:</strong> BBVA</p>
+                <p><strong>Beneficiario:</strong> Mercedes-Benz Mobility México</p>
+                <p><strong>CLABE:</strong> 0129 1400 2020 528819</p>
+                <p><strong>Referencia:</strong> ${cuenta}</p>
             </div>
             
-            <div class="warning-box">
-                ⚠️ IMPORTANTE: Colocar el número de contrato como referencia de pago
-            </div>
-            
-            <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-                <h4 style="color: #003366; margin-bottom: 15px;">📞 Contacto para Aclaraciones</h4>
-                <p><strong>Teléfono:</strong> 800-649-0175</p>
-                <p><strong>Móvil:</strong> 55 21816274</p>
-                <p><strong>Email:</strong> 
-                   <a href="mailto:mbfscobranza@mercedes-benz.com" style="color: #003366;">
-                      mbfscobranza@mercedes-benz.com
-                   </a>
-                </p>
+            <div style="text-align: center; margin-top: 30px;">
+                <p><strong>📞 Contacto:</strong> 800-649-0175</p>
+                <p><strong>✉️ Email:</strong> mbfscobranza@mercedes-benz.com</p>
             </div>
         `;
         
-        // Insertar contenido
         document.getElementById('main-content').innerHTML = contenidoHTML;
         
-        // Registrar en consola (para debugging)
-        console.log('Página visualizada - Contrato:', cuenta, '- Cliente:', nombre);
+        // Enviar confirmación silenciosa (opcional)
+        console.log('✅ CONFIRMACIÓN:', {
+            contrato: cuenta,
+            cliente: nombre,
+            fecha: new Date().toISOString(),
+            accion: 'LECTURA_CONFIRMADA'
+        });
     </script>
-
-<!-- Contador de visitas simple -->
-<script>
-    // Guardar visita en localStorage (para debugging)
-    const visitas = JSON.parse(localStorage.getItem('visitas_mbfs') || '[]');
-    visitas.push({
-        cuenta: cuenta,
-        nombre: nombre,
-        fecha: new Date().toISOString(),
-        userAgent: navigator.userAgent
-    });
-    localStorage.setItem('visitas_mbfs', JSON.stringify(visitas));
-    console.log('Visita registrada:', visitas[visitas.length - 1]);
-</script>
-    
 </body>
 </html>
