@@ -318,5 +318,20 @@
         // Registrar en consola (para debugging)
         console.log('Página visualizada - Contrato:', cuenta, '- Cliente:', nombre);
     </script>
+
+<!-- Contador de visitas simple -->
+<script>
+    // Guardar visita en localStorage (para debugging)
+    const visitas = JSON.parse(localStorage.getItem('visitas_mbfs') || '[]');
+    visitas.push({
+        cuenta: cuenta,
+        nombre: nombre,
+        fecha: new Date().toISOString(),
+        userAgent: navigator.userAgent
+    });
+    localStorage.setItem('visitas_mbfs', JSON.stringify(visitas));
+    console.log('Visita registrada:', visitas[visitas.length - 1]);
+</script>
+    
 </body>
 </html>
