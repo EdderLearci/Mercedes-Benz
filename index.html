@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmación de Lectura - Mercedes-Benz Mobility</title>
+    <title>Estado de Cuenta - Mercedes-Benz Mobility</title>
     <style>
         * {
             margin: 0;
@@ -62,6 +62,17 @@
             border: 1px solid #dee2e6;
         }
         
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
         .amount-highlight {
             background: #fff3cd;
             padding: 25px;
@@ -83,6 +94,16 @@
             border-radius: 12px;
             margin: 25px 0;
             border-left: 5px solid #003366;
+        }
+        
+        .warning-box {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+            text-align: center;
         }
         
         .footer {
@@ -109,85 +130,167 @@
         </div>
         
         <div class="content" id="main-content">
-            <div class="loading">Cargando información...</div>
+            <div class="loading">Cargando información de su cuenta...</div>
         </div>
         
         <div class="footer">
             <p>© 2024 Mercedes-Benz Mobility México, S. de R.L. de C.V.</p>
-            <p>Este documento es confidencial y contiene información privilegiada</p>
+            <p>Avenida Santa Fe No. 428, Torre III, Piso 3, Colonia Santa Fe</p>
+            <p>Alcaldía Cuajimalpa de Morelos, C.P. 05348, Ciudad de México</p>
+            <p style="margin-top: 10px;">Este documento es confidencial</p>
         </div>
     </div>
     
+    <!-- ============================================= -->
+    <!-- TRACKING AUTOMÁTICO A GOOGLE FORMS -->
+    <!-- ============================================= -->
     <script>
-        // Obtener parámetros de la URL
-        function getParameterByName(name) {
-            const url = window.location.href;
-            name = name.replace(/[\[\]]/g, '\\$&');
-            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-            const results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
-        
-        const cuenta = getParameterByName('cuenta') || 'No especificado';
-        const nombre = getParameterByName('nombre') || 'Cliente';
-        const monto = getParameterByName('monto') || '0';
-        const fecha = new Date().toLocaleDateString('es-MX', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        const montoFormateado = new Intl.NumberFormat('es-MX', {
-            style: 'currency',
-            currency: 'MXN'
-        }).format(parseFloat(monto));
-        
-        const contenidoHTML = `
-            <div class="confirmation-badge">
-                ✅ <strong>CONFIRMACIÓN DE LECTURA REGISTRADA</strong><br>
-                <small>${fecha} | Contrato: ${cuenta}</small>
-            </div>
+        (function() {
+            // Obtener parámetros de la URL
+            const params = new URLSearchParams(window.location.search);
+            const cuenta = params.get('cuenta');
+            const nombre = params.get('nombre');
+            const monto = params.get('monto');
+            const fechaActual = new Date();
             
-            <div class="info-card">
-                <h3>📋 Información del Cliente</h3>
-                <p><strong>👤 Cliente:</strong> ${nombre}</p>
-                <p><strong>🏢 Contrato:</strong> ${cuenta}</p>
-                <p><strong>📅 Fecha de consulta:</strong> ${fecha}</p>
-            </div>
+            // Enviar tracking a Google Forms (silencioso)
+            if (cuenta) {
+                const formID = '1FAIpQLSfz-QC3nL0gCJVcNdeZ4IaQYZu7Xtg25hhY2Ax0w4i-b54Ddg';
+                
+                // IDs de los campos del formulario
+                const ID_CONTRATO = 'entry.679676811';
+                const ID_NOMBRE = 'entry.1610959126';
+                const ID_MONTO = 'entry.880795086';
+                const ID_ANO = 'entry.1910263258_year';
+                const ID_MES = 'entry.1910263258_month';
+                const ID_DIA = 'entry.1910263258_day';
+                
+                // Construir URL de envío
+                const url = 'https://docs.google.com/forms/d/e/' + formID + '/formResponse?' +
+                    ID_CONTRATO + '=' + encodeURIComponent(cuenta) + '&' +
+                    ID_NOMBRE + '=' + encodeURIComponent(nombre) + '&' +
+                    ID_MONTO + '=' + encodeURIComponent(monto) + '&' +
+                    ID_ANO + '=' + fechaActual.getFullYear() + '&' +
+                    ID_MES + '=' + (fechaActual.getMonth() + 1) + '&' +
+                    ID_DIA + '=' + fechaActual.getDate() + '&' +
+                    'submit=Submit';
+                
+                // Enviar usando Image beacon (no afecta la experiencia del usuario)
+                const img = new Image();
+                img.src = url;
+                
+                console.log('✅ Confirmación de lectura enviada al sistema');
+                console.log('Contrato:', cuenta);
+                console.log('Cliente:', decodeURIComponent(nombre));
+                console.log('Fecha:', fechaActual.toLocaleString('es-MX'));
+            }
             
-            <div class="amount-highlight">
-                <h3>⚠️ SALDO VENCIDO</h3>
-                <div class="amount">${montoFormateado}</div>
-                <p style="color: #856404; margin-top: 10px;">Pago requerido a la brevedad</p>
-            </div>
+            // Función para obtener parámetros
+            function getParameterByName(name) {
+                return params.get(name) || '';
+            }
             
-            <div class="bank-info">
-                <h3>🏦 Datos Bancarios para Pago</h3>
-                <p><strong>Banco:</strong> BBVA</p>
-                <p><strong>Beneficiario:</strong> Mercedes-Benz Mobility México</p>
-                <p><strong>CLABE:</strong> 0129 1400 2020 528819</p>
-                <p><strong>Referencia:</strong> ${cuenta}</p>
-            </div>
+            // Obtener datos para mostrar
+            const cuentaMostrar = cuenta || 'No especificado';
+            const nombreMostrar = decodeURIComponent(nombre || 'Cliente');
+            const montoMostrar = monto || '0';
             
-            <div style="text-align: center; margin-top: 30px;">
-                <p><strong>📞 Contacto:</strong> 800-649-0175</p>
-                <p><strong>✉️ Email:</strong> mbfscobranza@mercedes-benz.com</p>
-            </div>
-        `;
-        
-        document.getElementById('main-content').innerHTML = contenidoHTML;
-        
-        // Enviar confirmación silenciosa (opcional)
-        console.log('✅ CONFIRMACIÓN:', {
-            contrato: cuenta,
-            cliente: nombre,
-            fecha: new Date().toISOString(),
-            accion: 'LECTURA_CONFIRMADA'
-        });
+            const fecha = fechaActual.toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const montoFormateado = new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN'
+            }).format(parseFloat(montoMostrar));
+            
+            // Construir contenido de la página
+            const contenidoHTML = `
+                <div class="confirmation-badge">
+                    ✅ <strong>CONFIRMACIÓN DE LECTURA REGISTRADA</strong><br>
+                    <small>${fecha} | Contrato: ${cuentaMostrar}</small>
+                </div>
+                
+                <div class="info-card">
+                    <h3>📋 Información del Cliente</h3>
+                    <div class="info-row">
+                        <span><strong>👤 Cliente:</strong></span>
+                        <span>${nombreMostrar}</span>
+                    </div>
+                    <div class="info-row">
+                        <span><strong>🏢 Contrato:</strong></span>
+                        <span style="font-weight: bold; color: #003366;">${cuentaMostrar}</span>
+                    </div>
+                    <div class="info-row">
+                        <span><strong>📅 Fecha de consulta:</strong></span>
+                        <span>${fecha}</span>
+                    </div>
+                </div>
+                
+                <div class="amount-highlight">
+                    <h3>⚠️ SALDO VENCIDO</h3>
+                    <div class="amount">${montoFormateado}</div>
+                    <p style="color: #856404; margin-top: 10px;">Pago requerido a la brevedad para evitar acciones legales</p>
+                </div>
+                
+                <div class="bank-info">
+                    <h3>🏦 Datos Bancarios para Pago</h3>
+                    <div class="info-row">
+                        <span><strong>Banco:</strong></span>
+                        <span>BBVA</span>
+                    </div>
+                    <div class="info-row">
+                        <span><strong>Beneficiario:</strong></span>
+                        <span>Mercedes-Benz Mobility México</span>
+                    </div>
+                    <div class="info-row">
+                        <span><strong>RFC:</strong></span>
+                        <span>MBF211124768</span>
+                    </div>
+                    <div class="info-row">
+                        <span><strong>Convenio CIE:</strong></span>
+                        <span>002052881</span>
+                    </div>
+                    <div class="info-row">
+                        <span><strong>CLABE:</strong></span>
+                        <span style="font-weight: bold;">0129 1400 2020 528819</span>
+                    </div>
+                    <div class="info-row">
+                        <span><strong>Referencia:</strong></span>
+                        <span style="color: #dc3545; font-weight: bold;">${cuentaMostrar}</span>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    ⚠️ IMPORTANTE: Colocar el número de contrato como referencia de pago
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4 style="color: #003366; margin-bottom: 15px;">📞 Contacto para Aclaraciones</h4>
+                    <p><strong>Teléfono:</strong> 800-649-0175</p>
+                    <p><strong>Móvil:</strong> 55 21816274</p>
+                    <p><strong>Email:</strong> 
+                       <a href="mailto:mbfscobranza@mercedes-benz.com" style="color: #003366;">
+                          mbfscobranza@mercedes-benz.com
+                       </a>
+                    </p>
+                </div>
+            `;
+            
+            // Mostrar contenido
+            document.getElementById('main-content').innerHTML = contenidoHTML;
+            
+            // Registrar en consola para verificación
+            console.log('📊 RESUMEN DE CONFIRMACIÓN:');
+            console.log('Contrato:', cuentaMostrar);
+            console.log('Cliente:', nombreMostrar);
+            console.log('Monto:', montoFormateado);
+            console.log('Fecha de confirmación:', fecha);
+        })();
     </script>
 </body>
 </html>
